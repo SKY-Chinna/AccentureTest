@@ -16,11 +16,11 @@ class LimitOrderAgent(PriceListener):
     def on_price_tick(self, product_id: str, price: float):
         # see PriceListener protocol and readme file
         for order in self.held_orders:
-            if order['product_id'] == product_id and price >= order['limit']:
-                if order['action'] == 'buy':
+            if order['product_id'] == product_id:
+                if order['action'] == 'buy' and price <= order['limit']:
                     self.execution_client.buy(product_id, order['amount'])
                     print(self.execution_client.buy(product_id, order['amount']))
-                elif order['action'] == 'sell':
+                elif order['action'] == 'sell' and price >= order['limit']:
                     self.execution_client.sell(product_id, order['amount'])
                     print(self.execution_client.sell(product_id, order['amount']))
                 self.held_orders.remove(order)
